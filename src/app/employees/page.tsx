@@ -8,10 +8,7 @@ import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 interface Funcionario {
   id: number;
   nome: string;
-  sobrenome: string;
   matricula: string;
-  email: string;
-  salario: string;
   nomeCompleto?: string;
 }
 
@@ -19,10 +16,7 @@ export default function Employees() {
   const [funcionario, setFuncionario] = useState<Funcionario>({
     id: 0,
     nome: "",
-    sobrenome: "",
     matricula: "",
-    email: "",
-    salario: "",
   });
 
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
@@ -32,28 +26,20 @@ export default function Employees() {
   const formik = useFormik({
     initialValues: {
       nome: "",
-      sobrenome: "",
       matricula: "",
-      email: "",
-      salario: "",
     },
     validationSchema: Yup.object({
       nome: Yup.string().required("O nome é obrigatório"),
-      sobrenome: Yup.string().required("O sobrenome é obrigatório"),
       matricula: Yup.string().required("A matrícula é obrigatória"),
-      email: Yup.string()
-        .email("Formato de email inválido")
-        .required("O email é obrigatório"),
-      salario: Yup.string().required("O salário é obrigatório"),
     }),
-    onSubmit: (values, {resetForm}) => {
+    onSubmit: (values, { resetForm }) => {
       const updatedFuncionarios = modoEdicao
         ? funcionarios.map((f) =>
             f.id === funcionario.id
               ? {
                   ...funcionario,
                   ...values,
-                  nomeCompleto: `${values.nome} ${values.sobrenome}`,
+                  nomeCompleto: values.nome,
                 }
               : f
           )
@@ -62,7 +48,7 @@ export default function Employees() {
             {
               ...values,
               id: Date.now(),
-              nomeCompleto: `${values.nome} ${values.sobrenome}`,
+              nomeCompleto: values.nome,
             },
           ];
 
@@ -72,10 +58,7 @@ export default function Employees() {
       setFuncionario({
         id: 0,
         nome: "",
-        sobrenome: "",
         matricula: "",
-        email: "",
-        salario: "",
       });
       resetForm();
     },
@@ -121,19 +104,6 @@ export default function Employees() {
           )}
         </div>
         <div className="mb-4">
-          <label className="block mb-1">Sobrenome:</label>
-          <input
-            type="text"
-            name="sobrenome"
-            value={formik.values.sobrenome}
-            onChange={formik.handleChange}
-            className="border p-1 w-full"
-          />
-          {formik.touched.sobrenome && formik.errors.sobrenome && (
-            <div className="text-red-500">{formik.errors.sobrenome}</div>
-          )}
-        </div>
-        <div className="mb-4">
           <label className="block mb-1">Matrícula:</label>
           <input
             type="text"
@@ -144,32 +114,6 @@ export default function Employees() {
           />
           {formik.touched.matricula && formik.errors.matricula && (
             <div className="text-red-500">{formik.errors.matricula}</div>
-          )}
-        </div>
-        <div className="mb-4">
-          <label className="block mb-1">Email:</label>
-          <input
-            type="text"
-            name="email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            className="border p-1 w-full"
-          />
-          {formik.touched.email && formik.errors.email && (
-            <div className="text-red-500">{formik.errors.email}</div>
-          )}
-        </div>
-        <div className="mb-4">
-          <label className="block mb-1">Salário:</label>
-          <input
-            type="text"
-            name="salario"
-            value={formik.values.salario}
-            onChange={formik.handleChange}
-            className="border p-1 w-full"
-          />
-          {formik.touched.salario && formik.errors.salario && (
-            <div className="text-red-500">{formik.errors.salario}</div>
           )}
         </div>
         <button type="submit" className="bg-blue-500 text-white px-4 py-2">
@@ -233,13 +177,6 @@ export default function Employees() {
           <p>
             <span className="font-semibold">Nome:</span>{" "}
             {funcionario.nomeCompleto}
-          </p>
-          <p>
-            <span className="font-semibold">Email:</span> {funcionario.email}
-          </p>
-          <p>
-            <span className="font-semibold">Salário:</span>{" "}
-            {funcionario.salario}
           </p>
           <button
             onClick={closeModal}

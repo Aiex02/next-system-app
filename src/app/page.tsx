@@ -10,15 +10,15 @@ export default function Home() {
             <span className="absolute top-2 left-0 right-0 text-center text-lg font-bold">*ICON*</span>
           </button>
         </Link>
-        <Link href="/link2">
+        <Link href="/training">
           <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-10 px-10 rounded-lg text-center relative">
-            Dados da empresa
+            Treinamento
             <span className="absolute top-2 left-0 right-0 text-center text-lg font-bold">*ICON*</span>
           </button>
         </Link>
         <Link href="/link3">
           <button className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-10 px-10 rounded-lg text-center relative">
-            Qualquer outra coisa
+            Funcionario X Treinamento
             <span className="absolute top-2 left-0 right-0 text-center text-lg font-bold">*ICON*</span>
           </button>
         </Link>

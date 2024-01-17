@@ -22,16 +22,16 @@ export default function Dropdown() {
             </Link>
           </li>
           <li>
-            <Link href="#">
+            <Link href="/training">
               <button className="block w-full text-left text-black bg-transparent hover:bg-orange-600 py-2 px-4 rounded-md focus:outline-none">
-                Dados da empresa
+                Treinamentos
               </button>
             </Link>
           </li>
           <li>
             <Link href="#">
               <button className="block w-full text-left text-black bg-transparent hover:bg-orange-600 py-2 px-4 rounded-md focus:outline-none">
-                Qualquer outra coisa
+                Funcionario X Treinamento
               </button>
             </Link>
           </li>
