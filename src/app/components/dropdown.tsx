@@ -29,9 +29,9 @@ export default function Dropdown() {
             </Link>
           </li>
           <li>
-            <Link href="#">
+            <Link href="/gerenciaTreinamento">
               <button className="block w-full text-left text-black bg-transparent hover:bg-orange-600 py-2 px-4 rounded-md focus:outline-none">
-                Funcionario X Treinamento
+                Gerenciamento de Treinamentos
               </button>
             </Link>
           </li>

@@ -16,9 +16,9 @@ export default function Home() {
             <span className="absolute top-2 left-0 right-0 text-center text-lg font-bold">*ICON*</span>
           </button>
         </Link>
-        <Link href="/link3">
+        <Link href="/gerenciaTreinamento">
           <button className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-10 px-10 rounded-lg text-center relative">
-            Funcionario X Treinamento
+            Gerenciamento de Treinamentos
             <span className="absolute top-2 left-0 right-0 text-center text-lg font-bold">*ICON*</span>
           </button>
         </Link>
