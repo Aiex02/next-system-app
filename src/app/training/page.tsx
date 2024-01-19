@@ -1,25 +1,41 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import axios from "axios";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
 interface Treinamento {
-  id: number;
+  id: string;
   nome: string;
   nr: string;
-  validade: string;
+  validade: number;
 }
 
 export default function Treinamentos() {
-  const [treinamento, setTreinamento] = useState<Treinamento>({
-    id: 0,
+  const [treinamento, setTreinamento] = useState({
+    id: "",
     nome: "",
     nr: "",
-    validade: "",
+    validade: 0,
   });
 
   const [treinamentos, setTreinamentos] = useState<Treinamento[]>([]);
   const [modoEdicao, setModoEdicao] = useState(false);
+  const [allTreinamentos, setAllTreinamentos] = useState<Treinamento[]>([]);
+
+  useEffect(() => {
+    const fetchTreinamentos = async () => {
+      try {
+        const response = await axios.get("http://localhost:3333/treinamentos");
+        setAllTreinamentos(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar treinamentos:", error);
+      }
+    };
+
+    fetchTreinamentos();
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -29,53 +45,44 @@ export default function Treinamentos() {
     },
     validationSchema: Yup.object({
       nome: Yup.string().required("O nome é obrigatório"),
-      nr: Yup.string()
-        .matches(/^[0-9]+$/, "Apenas números são permitidos")
-        .required("O NR é obrigatório"),
-      validade: Yup.string().required("A validade é obrigatória"),
+      nr: Yup.string().required("O NR é obrigatório"),
+      validade: Yup.number().required("A validade é obrigatória"),
     }),
-    onSubmit: (values, { resetForm }) => {
-      const updatedTreinamentos = modoEdicao
-        ? treinamentos.map((t) =>
-            t.id === treinamento.id
-              ? {
-                  ...treinamento,
-                  ...values,
-                }
-              : t
-          )
-        : [
-            ...treinamentos,
-            {
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const updatedTreinamentos = modoEdicao
+          ? await axios.put(
+              `http://localhost:3333/treinamentos/${treinamento.id}`,
+              { ...values, validade: Number(values.validade) }
+            )
+          : await axios.post("http://localhost:3333/treinamentos", {
               ...values,
-              id: Date.now(),
-            },
-          ];
+              validade: Number(values.validade),
+            });
 
-      setTreinamentos(updatedTreinamentos);
-      setModoEdicao(false);
+        setTreinamentos(updatedTreinamentos.data);
+        setModoEdicao(false);
+        setTreinamento({
+          id: "",
+          nome: "",
+          nr: "",
+          validade: 0,
+        });
+        resetForm();
 
-      setTreinamento({
-        id: 0,
-        nome: "",
-        nr: "",
-        validade: "",
-      });
-      resetForm();
+        window.location.reload();
+      } catch (error) {
+        console.error("Erro ao salvar treinamento:", error);
+      }
     },
   });
 
-  const handleEdit = (id: number) => {
-    const treinamentoParaEditar = treinamentos.find((t) => t.id === id);
+  const handleEdit = (id: string) => {
+    const treinamentoParaEditar = allTreinamentos.find((t) => t.id === id);
     if (treinamentoParaEditar) {
       setTreinamento(treinamentoParaEditar);
       setModoEdicao(true);
     }
-  };
-
-  const handleDelete = (id: number) => {
-    const updatedTreinamentos = treinamentos.filter((t) => t.id !== id);
-    setTreinamentos(updatedTreinamentos);
   };
 
   return (
@@ -125,34 +132,31 @@ export default function Treinamentos() {
           {modoEdicao ? "Editar Treinamento" : "Adicionar Treinamento"}
         </button>
       </form>
-
-      <table className="w-full border-collapse border mx-auto max-w-xl">
+      <table className="w-5/6 border-collapse border mx-auto">
         <thead>
-          <tr className="bg-gray-200">
-            <th className="border p-2">Nome</th>
-            <th className="border p-2">NR</th>
-            <th className="border p-2">Validade</th>
-            <th className="border p-2">Ações</th>
+          <tr>
+            <th className="border px-4 py-2">Nome</th>
+            <th className="border px-4 py-2">NR</th>
+            <th className="border px-4 py-2">Validade</th>
+            <th className="border px-4 py-2">Ações</th>
           </tr>
         </thead>
+
         <tbody>
-          {treinamentos.map((t) => (
-            <tr key={t.id}>
-              <td className="border p-2 text-center">{t.nome}</td>
-              <td className="border p-2 text-center">{t.nr}</td>
-              <td className="border p-2 text-center">{t.validade}</td>
-              <td className="border p-2 text-center">
+          {allTreinamentos.map((treinamento) => (
+            <tr key={treinamento.id}>
+              <td className="border px-4 py-2">{treinamento.nome}</td>
+              <td className="border px-4 py-2">{treinamento.nr}</td>
+              <td className="border px-4 py-2">{`${treinamento.validade} meses`}</td>
+              <td className="border p-2 text-center space-x-1">
                 <button
-                  onClick={() => handleEdit(t.id)}
-                  className="bg-yellow-500 text-white px-3 py-1 mr-2"
+                  className="bg-yellow-500 text-white px-2 py-1 mr-2"
+                  onClick={() => handleEdit(treinamento.id)}
                 >
-                  Editar
+                  <FaEdit />
                 </button>
-                <button
-                  onClick={() => handleDelete(t.id)}
-                  className="bg-red-500 text-white px-3 py-1 mr-2"
-                >
-                  Excluir
+                <button className="bg-red-500 text-white px-2 py-1">
+                <FaTrashAlt />
                 </button>
               </td>
             </tr>

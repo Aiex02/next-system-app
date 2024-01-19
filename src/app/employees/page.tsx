@@ -1,18 +1,18 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
+import axios from "axios";
 
 interface Funcionario {
   id: number;
   nome: string;
   matricula: string;
-  nomeCompleto?: string;
 }
 
-export default function Employees() {
+export default function Funcionarios() {
   const [funcionario, setFuncionario] = useState<Funcionario>({
     id: 0,
     nome: "",
@@ -22,6 +22,20 @@ export default function Employees() {
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const [modoEdicao, setModoEdicao] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
+  const [allFuncionarios, setAllFuncionarios] = useState<Funcionario[]>([]);
+
+  useEffect(() => {
+    const fetchFuncionarios = async () => {
+      try {
+        const response = await axios.get("http://localhost:3333/funcionarios");
+        setAllFuncionarios(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar treinamentos:", error);
+      }
+    };
+
+    fetchFuncionarios();
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -32,50 +46,33 @@ export default function Employees() {
       nome: Yup.string().required("O nome é obrigatório"),
       matricula: Yup.string().required("A matrícula é obrigatória"),
     }),
-    onSubmit: (values, { resetForm }) => {
-      const updatedFuncionarios = modoEdicao
-        ? funcionarios.map((f) =>
-            f.id === funcionario.id
-              ? {
-                  ...funcionario,
-                  ...values,
-                  nomeCompleto: values.nome,
-                }
-              : f
-          )
-        : [
-            ...funcionarios,
-            {
+    onSubmit: async (values, { resetForm }) => {
+      try {
+        const updatedFuncionarios = modoEdicao
+          ? await axios.put(
+              `http://localhost:3333/funcionarios/${funcionario.id}`,
+              { ...values, nomeCompleto: values.nome }
+            )
+          : await axios.post("http://localhost:3333/funcionarios", {
               ...values,
               id: Date.now(),
               nomeCompleto: values.nome,
-            },
-          ];
+            });
 
-      setFuncionarios(updatedFuncionarios);
-      setModoEdicao(false);
-
-      setFuncionario({
-        id: 0,
-        nome: "",
-        matricula: "",
-      });
-      resetForm();
+        setFuncionarios(updatedFuncionarios.data);
+        setModoEdicao(false);
+        setFuncionario({
+          id: 0,
+          nome: "",
+          matricula: "",
+        });
+        resetForm();
+        window.location.reload();
+      } catch (error) {
+        console.error("Erro ao salvar funcionário:", error);
+      }
     },
   });
-
-  const handleEdit = (id: number) => {
-    const funcionarioParaEditar = funcionarios.find((f) => f.id === id);
-    if (funcionarioParaEditar) {
-      setFuncionario(funcionarioParaEditar);
-      setModoEdicao(true);
-    }
-  };
-
-  const handleDelete = (id: number) => {
-    const updatedFuncionarios = funcionarios.filter((f) => f.id !== id);
-    setFuncionarios(updatedFuncionarios);
-  };
 
   const openModal = (f: Funcionario) => {
     setFuncionario(f);
@@ -84,6 +81,14 @@ export default function Employees() {
 
   const closeModal = () => {
     setModalAberto(false);
+  };
+
+  const handleEdit = (id: number) => {
+    const funcionarioParaEditar = allFuncionarios.find((f) => f.id === id);
+    if (funcionarioParaEditar) {
+      setFuncionario(funcionarioParaEditar);
+      setModoEdicao(true);
+    }
   };
 
   return (
@@ -121,7 +126,7 @@ export default function Employees() {
         </button>
       </form>
 
-      <table className="w-full border-collapse border mx-auto max-w-xl">
+      <table className=" w-5/6 border-collapse border mx-auto ">
         <thead>
           <tr className="bg-gray-200">
             <th className="border p-2">Matrícula</th>
@@ -130,26 +135,25 @@ export default function Employees() {
           </tr>
         </thead>
         <tbody>
-          {funcionarios.map((f) => (
+          {allFuncionarios.map((f) => (
             <tr key={f.id}>
               <td className="border p-2 text-center">{f.matricula}</td>
-              <td className="border p-2 text-center">{f.nomeCompleto}</td>
-              <td className="border p-2 text-center">
+              <td className="border p-2 text-center">{f.nome}</td>
+              <td className="border p-2 text-center space-x-2">
                 <button
                   onClick={() => handleEdit(f.id)}
-                  className="bg-yellow-500 text-white px-3 py-1 mr-2"
+                  className="bg-yellow-500 text-white px-2 py-1"
                 >
                   <FaEdit />
                 </button>
                 <button
-                  onClick={() => handleDelete(f.id)}
-                  className="bg-red-500 text-white px-3 py-1 mr-2"
+                  className="bg-red-500 text-white px-2 py-1"
                 >
                   <FaTrashAlt />
                 </button>
                 <button
                   onClick={() => openModal(f)}
-                  className="bg-green-500 text-white px-3 py-1"
+                  className="bg-green-500 text-white px-2 py-1"
                 >
                   <FaEye />
                 </button>
@@ -175,8 +179,7 @@ export default function Employees() {
             {funcionario.matricula}
           </p>
           <p>
-            <span className="font-semibold">Nome:</span>{" "}
-            {funcionario.nomeCompleto}
+            <span className="font-semibold">Nome:</span> {funcionario.nome}
           </p>
           <button
             onClick={closeModal}
