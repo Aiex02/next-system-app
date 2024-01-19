@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import axios from "axios";
 
-interface Funcionario {
+export interface Funcionario {
   id: number;
   nome: string;
   matricula: string;
@@ -19,16 +19,15 @@ export default function Funcionarios() {
     matricula: "",
   });
 
-  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const [modoEdicao, setModoEdicao] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
-  const [allFuncionarios, setAllFuncionarios] = useState<Funcionario[]>([]);
+  const [allEmployees, setAllEmployees] = useState<Funcionario[]>([]);
 
   useEffect(() => {
     const fetchFuncionarios = async () => {
       try {
         const response = await axios.get("http://localhost:3333/funcionarios");
-        setAllFuncionarios(response.data);
+        setAllEmployees(response.data);
       } catch (error) {
         console.error("Erro ao buscar treinamentos:", error);
       }
@@ -59,7 +58,7 @@ export default function Funcionarios() {
               nomeCompleto: values.nome,
             });
 
-        setFuncionarios(updatedFuncionarios.data);
+        setAllEmployees(updatedFuncionarios.data);
         setModoEdicao(false);
         setFuncionario({
           id: 0,
@@ -84,10 +83,15 @@ export default function Funcionarios() {
   };
 
   const handleEdit = (id: number) => {
-    const funcionarioParaEditar = allFuncionarios.find((f) => f.id === id);
+    const funcionarioParaEditar = allEmployees.find((f) => f.id === id);
     if (funcionarioParaEditar) {
+      console.log(funcionarioParaEditar.nome)
       setFuncionario(funcionarioParaEditar);
       setModoEdicao(true);
+      formik.setValues({
+        nome: funcionarioParaEditar.nome,
+        matricula: funcionarioParaEditar.matricula,
+      });
     }
   };
 
@@ -135,7 +139,7 @@ export default function Funcionarios() {
           </tr>
         </thead>
         <tbody>
-          {allFuncionarios.map((f) => (
+          {allEmployees.map((f) => (
             <tr key={f.id}>
               <td className="border p-2 text-center">{f.matricula}</td>
               <td className="border p-2 text-center">{f.nome}</td>
@@ -146,9 +150,7 @@ export default function Funcionarios() {
                 >
                   <FaEdit />
                 </button>
-                <button
-                  className="bg-red-500 text-white px-2 py-1"
-                >
+                <button className="bg-red-500 text-white px-2 py-1">
                   <FaTrashAlt />
                 </button>
                 <button

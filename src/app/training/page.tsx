@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
-interface Treinamento {
+export interface Treinamento {
   id: string;
   nome: string;
   nr: string;
@@ -20,7 +20,6 @@ export default function Treinamentos() {
     validade: 0,
   });
 
-  const [treinamentos, setTreinamentos] = useState<Treinamento[]>([]);
   const [modoEdicao, setModoEdicao] = useState(false);
   const [allTreinamentos, setAllTreinamentos] = useState<Treinamento[]>([]);
 
@@ -60,7 +59,7 @@ export default function Treinamentos() {
               validade: Number(values.validade),
             });
 
-        setTreinamentos(updatedTreinamentos.data);
+        setAllTreinamentos(updatedTreinamentos.data);
         setModoEdicao(false);
         setTreinamento({
           id: "",
@@ -82,6 +81,11 @@ export default function Treinamentos() {
     if (treinamentoParaEditar) {
       setTreinamento(treinamentoParaEditar);
       setModoEdicao(true);
+      formik.setValues({
+        nome: treinamentoParaEditar.nome,
+        nr: treinamentoParaEditar.nr,
+        validade: String(treinamentoParaEditar.validade),
+      });
     }
   };
 
