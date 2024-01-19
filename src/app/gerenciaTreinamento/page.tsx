@@ -1,22 +1,51 @@
-"use client"
+'use client'
 import React, { useState, useEffect } from 'react';
+import { useFormik } from 'formik';
 import axios from 'axios';
 
-export default function TreunaFunc(){ 
-  const [associacoes, setAssociacoes] = useState<{ funcionarioId: number; treinamentoId: number }[]>([]);
-  const [funcionarios, setFuncionarios] = useState<{ id: number; nome: string }[]>([]);
-  const [treinamentos, setTreinamentos] = useState<{ id: number; nome: string }[]>([]);
+interface Funcionario {
+  id: number;
+  nome: string;
+}
 
-  useEffect(() => {
-    const fetchAssociacoes = async () => {
+interface Treinamento {
+  id: number;
+  nome: string;
+}
+
+interface Associacao {
+  funcionarioId: number;
+  treinamentoId: number;
+}
+
+export default function TreunaFunc() {
+  const [associacoes, setAssociacoes] = useState<Associacao[]>([]);
+  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
+  const [treinamentos, setTreinamentos] = useState<Treinamento[]>([]);
+
+  const formik = useFormik({
+    initialValues: {
+      funcionarioId: '',
+      treinamentoId: '',
+    },
+    onSubmit: async (values) => {
       try {
+        // Send the form data to the server
+        await axios.post('http://localhost:3333/treinamentos-funcionario', values);
+
+        // Refresh the associations after successful submission
         const responseAssociacoes = await axios.get('http://localhost:3333/treinamentos-funcionario');
         setAssociacoes(responseAssociacoes.data);
-      } catch (error) {
-        console.error('Erro ao buscar associações:', error);
-      }
-    };
 
+        // Clear the form after submission
+        formik.resetForm();
+      } catch (error) {
+        console.error('Erro ao enviar o formulário:', error);
+      }
+    },
+  });
+
+  useEffect(() => {
     const fetchFuncionarios = async () => {
       try {
         const responseFuncionarios = await axios.get('http://localhost:3333/funcionarios');
@@ -35,15 +64,74 @@ export default function TreunaFunc(){
       }
     };
 
-    fetchAssociacoes();
+    const fetchAssociacoes = async () => {
+      try {
+        const responseAssociacoes = await axios.get('http://localhost:3333/treinamentos-funcionario');
+        setAssociacoes(responseAssociacoes.data);
+      } catch (error) {
+        console.error('Erro ao buscar associações:', error);
+      }
+    };
+
     fetchFuncionarios();
     fetchTreinamentos();
+    fetchAssociacoes();
   }, []);
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-gray-100 rounded shadow">
       <h2 className="text-2xl font-bold mb-4">Associações de Funcionários e Treinamentos</h2>
-      <table className="min-w-full border rounded overflow-hidden">
+      <form onSubmit={formik.handleSubmit}>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label htmlFor="funcionarioId" className="block text-sm font-medium text-gray-700">
+              Funcionário
+            </label>
+            <select
+              id="funcionarioId"
+              name="funcionarioId"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.funcionarioId}
+              className="mt-1 block w-full py-2 px-3 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 sm:text-sm"
+            >
+              <option value="" label="Selecione um funcionário" />
+              {funcionarios.map((funcionario) => (
+                <option key={funcionario.id} value={funcionario.id}>
+                  {funcionario.nome}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label htmlFor="treinamentoId" className="block text-sm font-medium text-gray-700">
+              Treinamento
+            </label>
+            <select
+              id="treinamentoId"
+              name="treinamentoId"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.treinamentoId}
+              className="mt-1 block w-full py-2 px-3 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 sm:text-sm"
+            >
+              <option value="" label="Selecione um treinamento" />
+              {treinamentos.map((treinamento) => (
+                <option key={treinamento.id} value={treinamento.id}>
+                  {treinamento.nome}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <button
+          type="submit"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300 active:bg-blue-800"
+        >
+          Enviar
+        </button>
+      </form>
+      <table className="min-w-full border rounded overflow-hidden mt-4">
         <thead className="bg-gray-200">
           <tr>
             <th className="border px-4 py-2">Funcionário ID</th>
@@ -70,5 +158,4 @@ export default function TreunaFunc(){
       </table>
     </div>
   );
-};
-
+}

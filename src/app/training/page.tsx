@@ -81,11 +81,6 @@ export default function Treinamentos() {
     if (treinamentoParaEditar) {
       setTreinamento(treinamentoParaEditar);
       setModoEdicao(true);
-      formik.setValues({
-        nome: treinamentoParaEditar.nome,
-        nr: treinamentoParaEditar.nr,
-        validade: String(treinamentoParaEditar.validade),
-      });
     }
   };
 
