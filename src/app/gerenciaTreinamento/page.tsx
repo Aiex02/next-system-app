@@ -16,6 +16,7 @@ interface Treinamento {
 interface Associacao {
   funcionarioId: number;
   treinamentoId: number;
+  dataTreinamento: Date; 
 }
 
 export default function TreunaFunc() {
@@ -27,17 +28,15 @@ export default function TreunaFunc() {
     initialValues: {
       funcionarioId: '',
       treinamentoId: '',
+      dataTreinamento: '',
     },
     onSubmit: async (values) => {
       try {
-        // Send the form data to the server
         await axios.post('http://localhost:3333/treinamentos-funcionario', values);
 
-        // Refresh the associations after successful submission
         const responseAssociacoes = await axios.get('http://localhost:3333/treinamentos-funcionario');
         setAssociacoes(responseAssociacoes.data);
 
-        // Clear the form after submission
         formik.resetForm();
       } catch (error) {
         console.error('Erro ao enviar o formulário:', error);
@@ -122,6 +121,20 @@ export default function TreunaFunc() {
                 </option>
               ))}
             </select>
+          </div>
+          <div>
+            <label htmlFor="dataTreinamento" className="block text-sm font-medium text-gray-700">
+              Data do Treinamento
+            </label>
+            <input
+              type="date"
+              id="dataTreinamento"
+              name="dataTreinamento"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.dataTreinamento}
+              className="mt-1 block w-full py-2 px-3 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-300 sm:text-sm"
+            />
           </div>
         </div>
         <button
