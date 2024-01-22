@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
 import axios from "axios";
 
-export interface Funcionario {
+interface Funcionario {
   id: number;
   nome: string;
   matricula: string;
@@ -66,6 +66,7 @@ export default function Funcionarios() {
           matricula: "",
         });
         resetForm();
+        
         window.location.reload();
       } catch (error) {
         console.error("Erro ao salvar funcionário:", error);
@@ -139,13 +140,13 @@ export default function Funcionarios() {
           </tr>
         </thead>
         <tbody>
-          {allEmployees.map((f) => (
-            <tr key={f.id}>
-              <td className="border p-2 text-center">{f.matricula}</td>
-              <td className="border p-2 text-center">{f.nome}</td>
+          {allEmployees.map((funcionario) => (
+            <tr key={funcionario.id}>
+              <td className="border p-2 text-center">{funcionario.matricula}</td>
+              <td className="border p-2 text-center">{funcionario.nome}</td>
               <td className="border p-2 text-center space-x-2">
                 <button
-                  onClick={() => handleEdit(f.id)}
+                  onClick={() => handleEdit(funcionario.id)}
                   className="bg-yellow-500 text-white px-2 py-1"
                 >
                   <FaEdit />
@@ -154,7 +155,7 @@ export default function Funcionarios() {
                   <FaTrashAlt />
                 </button>
                 <button
-                  onClick={() => openModal(f)}
+                  onClick={() => openModal(funcionario)}
                   className="bg-green-500 text-white px-2 py-1"
                 >
                   <FaEye />

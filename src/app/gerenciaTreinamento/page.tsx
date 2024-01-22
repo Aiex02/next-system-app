@@ -6,11 +6,14 @@ import axios from 'axios';
 interface Funcionario {
   id: number;
   nome: string;
+  matricula: string;
 }
 
 interface Treinamento {
   id: number;
   nome: string;
+  nr: string;
+  validade: number;
 }
 
 interface Associacao {
@@ -19,10 +22,13 @@ interface Associacao {
   dataTreinamento: Date; 
 }
 
-export default function TreunaFunc() {
+
+export default function TreinaFunc() {
+
   const [associacoes, setAssociacoes] = useState<Associacao[]>([]);
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const [treinamentos, setTreinamentos] = useState<Treinamento[]>([]);
+
 
   const formik = useFormik({
     initialValues: {
@@ -32,7 +38,13 @@ export default function TreunaFunc() {
     },
     onSubmit: async (values) => {
       try {
-        await axios.post('http://localhost:3333/treinamentos-funcionario', values);
+
+        const isoDate = new Date(values.dataTreinamento).toISOString();
+
+        await axios.post('http://localhost:3333/treinamentos-funcionario', {
+          ...values,
+          dataTreinamento: isoDate,
+        });
 
         const responseAssociacoes = await axios.get('http://localhost:3333/treinamentos-funcionario');
         setAssociacoes(responseAssociacoes.data);
@@ -45,38 +57,24 @@ export default function TreunaFunc() {
   });
 
   useEffect(() => {
-    const fetchFuncionarios = async () => {
+    const fetchData = async () => {
       try {
-        const responseFuncionarios = await axios.get('http://localhost:3333/funcionarios');
-        setFuncionarios(responseFuncionarios.data);
+        const [funcionariosData, treinamentosData, associacoesData] = await Promise.all([
+          axios.get('http://localhost:3333/funcionarios'),
+          axios.get('http://localhost:3333/treinamentos'),
+          axios.get('http://localhost:3333/treinamentos-funcionario'),
+        ]);
+
+        setFuncionarios(funcionariosData.data);
+        setTreinamentos(treinamentosData.data);
+        setAssociacoes(associacoesData.data);
       } catch (error) {
-        console.error('Erro ao buscar funcionários:', error);
+        console.error('Erro ao buscar dados:', error);
       }
     };
 
-    const fetchTreinamentos = async () => {
-      try {
-        const responseTreinamentos = await axios.get('http://localhost:3333/treinamentos');
-        setTreinamentos(responseTreinamentos.data);
-      } catch (error) {
-        console.error('Erro ao buscar treinamentos:', error);
-      }
-    };
-
-    const fetchAssociacoes = async () => {
-      try {
-        const responseAssociacoes = await axios.get('http://localhost:3333/treinamentos-funcionario');
-        setAssociacoes(responseAssociacoes.data);
-      } catch (error) {
-        console.error('Erro ao buscar associações:', error);
-      }
-    };
-
-    fetchFuncionarios();
-    fetchTreinamentos();
-    fetchAssociacoes();
+    fetchData();
   }, []);
-
   return (
     <div className="max-w-2xl mx-auto p-6 bg-gray-100 rounded shadow">
       <h2 className="text-2xl font-bold mb-4">Associações de Funcionários e Treinamentos</h2>
@@ -147,10 +145,11 @@ export default function TreunaFunc() {
       <table className="min-w-full border rounded overflow-hidden mt-4">
         <thead className="bg-gray-200">
           <tr>
-            <th className="border px-4 py-2">Funcionário ID</th>
+            <th className="border px-4 py-2">Matrícula</th>
             <th className="border px-4 py-2">Funcionário Nome</th>
-            <th className="border px-4 py-2">Treinamento ID</th>
+            <th className="border px-4 py-2">Nr</th>
             <th className="border px-4 py-2">Treinamento Nome</th>
+            <th className="border px-4 py-2">Data Treinamento</th>
           </tr>
         </thead>
         <tbody>
@@ -160,10 +159,11 @@ export default function TreunaFunc() {
 
             return (
               <tr key={`${associacao.funcionarioId}-${associacao.treinamentoId}`}>
-                <td className="border px-4 py-2">{associacao.funcionarioId}</td>
+                <td className="border px-4 py-2">{funcionario?.matricula || 'Não encontrado'}</td>
                 <td className="border px-4 py-2">{funcionario?.nome || 'Não encontrado'}</td>
-                <td className="border px-4 py-2">{associacao.treinamentoId}</td>
+                <td className="border px-4 py-2">{treinamento?.nr || 'Não encontrado'}</td>
                 <td className="border px-4 py-2">{treinamento?.nome || 'Não encontrado'}</td>
+                <td className="border px-4 py-2">{associacao.dataTreinamento ? new Date(associacao.dataTreinamento).toLocaleDateString() : 'Não encontrado'}</td>
               </tr>
             );
           })}

@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 
-export interface Treinamento {
+interface Treinamento {
   id: string;
   nome: string;
   nr: string;
