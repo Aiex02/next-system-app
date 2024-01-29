@@ -3,8 +3,12 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaEye, FaSearch } from "react-icons/fa";
 import axios from "axios";
+
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface Funcionario {
   id: number;
@@ -66,8 +70,6 @@ export default function Funcionarios() {
           matricula: "",
         });
         resetForm();
-        
-        window.location.reload();
       } catch (error) {
         console.error("Erro ao salvar funcionário:", error);
       }
@@ -99,7 +101,7 @@ export default function Funcionarios() {
   return (
     <div className="p-4 mt-14">
       <h1 className="text-center font-bold text-xl">Funcionários</h1>
-      <form onSubmit={formik.handleSubmit} className="mb-4 mx-auto max-w-xl">
+      <form onSubmit={formik.handleSubmit} className="mb-4 mx-auto max-w-xl mt-6">
         <div className="mb-4">
           <label className="block mb-1">Nome:</label>
           <input
@@ -130,21 +132,31 @@ export default function Funcionarios() {
           {modoEdicao ? "Editar Funcionário" : "Adicionar Funcionário"}
         </button>
       </form>
-
-      <table className=" w-5/6 border-collapse border mx-auto ">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border p-2">Matrícula</th>
-            <th className="border p-2">Nome</th>
-            <th className="border p-2">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div className="flex flex-col items-center justify-between mt-20">
+        <form className=" flex gap-2">
+          <Input name="matricula" placeholder="Matricula do Funcionario"/>
+          <Input name="name" placeholder="Nome do Funcionario"/>
+          <Button type="submit" variant="link" className="gap-2">
+            <FaSearch />
+            Filtrar Resultados
+          </Button>
+        </form>
+      </div>
+      <div className="bouder rounded-lg p-2 mt-4">
+        <Table className="w-5/6 mx-auto border-collapse border">
+        <TableHeader>
+          <TableRow>
+            <TableHead className="border p-2 text-center font-bold">Matrícula</TableHead>
+            <TableHead className="border p-2 text-center font-bold">Nome</TableHead>
+            <TableHead className="border p-2 text-center font-bold">Ações</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {allEmployees.map((funcionario) => (
-            <tr key={funcionario.id}>
-              <td className="border p-2 text-center">{funcionario.matricula}</td>
-              <td className="border p-2 text-center">{funcionario.nome}</td>
-              <td className="border p-2 text-center space-x-2">
+            <TableRow key={funcionario.id}>
+              <TableCell className="border p-2 text-center">{funcionario.matricula}</TableCell>
+              <TableCell className="border p-2 text-center">{funcionario.nome}</TableCell>
+              <TableCell className="border p-2 text-center space-x-2">
                 <button
                   onClick={() => handleEdit(funcionario.id)}
                   className="bg-yellow-500 text-white px-2 py-1"
@@ -160,11 +172,12 @@ export default function Funcionarios() {
                 >
                   <FaEye />
                 </button>
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+            </Table>
+      </div>
 
       <Modal
         isOpen={modalAberto}
