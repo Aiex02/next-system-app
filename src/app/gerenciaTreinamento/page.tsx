@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import axios from 'axios';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 interface Funcionario {
   id: number;
@@ -142,33 +143,33 @@ export default function TreinaFunc() {
           Enviar
         </button>
       </form>
-      <table className="min-w-full border rounded overflow-hidden mt-4">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="border px-4 py-2">Matrícula</th>
-            <th className="border px-4 py-2">Funcionário Nome</th>
-            <th className="border px-4 py-2">Nr</th>
-            <th className="border px-4 py-2">Treinamento Nome</th>
-            <th className="border px-4 py-2">Data Treinamento</th>
-          </tr>
-        </thead>
-        <tbody>
+      <Table className="min-w-full border rounded overflow-hidden mt-4">
+        <TableHeader className="bg-gray-200">
+          <TableRow>
+            <TableHead className="border px-4 py-2">Matrícula</TableHead>
+            <TableHead className="border px-4 py-2">Funcionário Nome</TableHead>
+            <TableHead className="border px-4 py-2">Nr</TableHead>
+            <TableHead className="border px-4 py-2">Treinamento Nome</TableHead>
+            <TableHead className="border px-4 py-2">Data Treinamento</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {associacoes.map((associacao) => {
             const funcionario = funcionarios.find((f) => f.id === associacao.funcionarioId);
             const treinamento = treinamentos.find((t) => t.id === associacao.treinamentoId);
 
             return (
-              <tr key={`${associacao.funcionarioId}-${associacao.treinamentoId}`}>
-                <td className="border px-4 py-2">{funcionario?.matricula || 'Não encontrado'}</td>
-                <td className="border px-4 py-2">{funcionario?.nome || 'Não encontrado'}</td>
-                <td className="border px-4 py-2">{treinamento?.nr || 'Não encontrado'}</td>
-                <td className="border px-4 py-2">{treinamento?.nome || 'Não encontrado'}</td>
-                <td className="border px-4 py-2">{associacao.dataTreinamento ? new Date(associacao.dataTreinamento).toLocaleDateString() : 'Não encontrado'}</td>
-              </tr>
+              <TableRow key={`${associacao.funcionarioId}-${associacao.treinamentoId}`}>
+                <TableCell className="border px-4 py-2">{funcionario?.matricula || 'Não encontrado'}</TableCell>
+                <TableCell className="border px-4 py-2">{funcionario?.nome || 'Não encontrado'}</TableCell>
+                <TableCell className="border px-4 py-2">{treinamento?.nr || 'Não encontrado'}</TableCell>
+                <TableCell className="border px-4 py-2">{treinamento?.nome || 'Não encontrado'}</TableCell>
+                <TableCell className="border px-4 py-2">{associacao.dataTreinamento ? new Date(associacao.dataTreinamento).toLocaleDateString() : 'Não encontrado'}</TableCell>
+              </TableRow>
             );
           })}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 }

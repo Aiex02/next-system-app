@@ -34,6 +34,11 @@ export default function Dropdown() {
                 Gerenciamento de Treinamentos
               </button>
             </Link>
+            <Link href="/gerenciaUsuarios">
+              <button className="block w-full text-left text-black bg-transparent hover:bg-orange-600 py-2 px-4 rounded-md focus:outline-none">
+                Gerenciamento de Usuários
+              </button>
+            </Link>
           </li>
         </ul>
       </div>

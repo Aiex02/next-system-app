@@ -95,6 +95,7 @@ export default function Funcionarios() {
         nome: funcionarioParaEditar.nome,
         matricula: funcionarioParaEditar.matricula,
       });
+      window.scrollTo(0, 0);
     }
   };
 
