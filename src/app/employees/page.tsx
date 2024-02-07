@@ -31,6 +31,7 @@ export default function Funcionarios() {
     const fetchFuncionarios = async () => {
       try {
         const response = await axios.get("http://localhost:3333/funcionarios");
+        console.log(response.data)
         setAllEmployees(response.data);
       } catch (error) {
         console.error("Erro ao buscar treinamentos:", error);
@@ -62,7 +63,7 @@ export default function Funcionarios() {
               nomeCompleto: values.nome,
             });
 
-        setAllEmployees(updatedFuncionarios.data);
+        setAllEmployees([...allEmployees, updatedFuncionarios.data]);
         setModoEdicao(false);
         setFuncionario({
           id: 0,

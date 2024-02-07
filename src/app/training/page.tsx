@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaSearch, FaTrashAlt } from "react-icons/fa";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface Treinamento {
   id: string;
@@ -52,15 +54,15 @@ export default function Treinamentos() {
       try {
         const updatedTreinamentos = modoEdicao
           ? await axios.put(
-              `http://localhost:3333/treinamentos/${treinamento.id}`,
-              { ...values, validade: Number(values.validade) }
-            )
+            `http://localhost:3333/treinamentos/${treinamento.id}`,
+            { ...values, validade: Number(values.validade) }
+          )
           : await axios.post("http://localhost:3333/treinamentos", {
-              ...values,
-              validade: Number(values.validade),
-            });
+            ...values,
+            validade: Number(values.validade),
+          });
 
-        setAllTreinamentos(updatedTreinamentos.data);
+        setAllTreinamentos([...allTreinamentos, updatedTreinamentos.data]);
         setModoEdicao(false);
         setTreinamento({
           id: "",
@@ -69,8 +71,6 @@ export default function Treinamentos() {
           validade: 0,
         });
         resetForm();
-
-        window.location.reload();
       } catch (error) {
         console.error("Erro ao salvar treinamento:", error);
       }
@@ -90,9 +90,9 @@ export default function Treinamentos() {
       window.scrollTo(0, 0);
     }
   };
-  
-  
-  
+
+
+
 
   return (
     <div className="p-4 mt-14">
@@ -141,7 +141,17 @@ export default function Treinamentos() {
           {modoEdicao ? "Editar Treinamento" : "Adicionar Treinamento"}
         </button>
       </form>
-      <Table className="w-5/6 border-collapse border mx-auto">
+      <div className="flex flex-col items-center justify-between mt-20">
+        <form className=" flex gap-2">
+          <Input name="matricula" placeholder="Matricula do Funcionario" />
+          <Input name="name" placeholder="Nome do Funcionario" />
+          <Button type="submit" variant="link" className="gap-2">
+            <FaSearch />
+            Filtrar Resultados
+          </Button>
+        </form>
+      </div>
+      <Table className="w-5/6 border-collapse border mt-4 mx-auto">
         <TableHeader>
           <TableRow>
             <TableHead className="border px-4 py-2">Nome</TableHead>
@@ -165,7 +175,7 @@ export default function Treinamentos() {
                   <FaEdit />
                 </button>
                 <button className="bg-red-500 text-white px-2 py-1">
-                <FaTrashAlt />
+                  <FaTrashAlt />
                 </button>
               </TableCell>
             </TableRow>
