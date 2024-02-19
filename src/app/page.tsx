@@ -1,28 +1,27 @@
 import Link from 'next/link';
+import { FaUser, FaBook, FaChalkboardTeacher, FaUsers } from 'react-icons/fa';
 
 export default function Home() {
   return (
-    <div className="flex justify-center items-center">
-      <div className="flex mt-24 space-x-4">
-        <Link href="/employees">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-10 px-10 rounded-lg text-center relative">
-            Funcionários
-            <span className="absolute top-2 left-0 right-0 text-center text-lg font-bold">*ICON*</span>
-          </button>
+    <div className="flex items-center justify-center mt-52">
+      <div className="grid grid-cols-3 gap-4 text-center content-center">
+        <Link href="/employees" className="bg-green-500 hover:bg-green-600 text-white font-bold py-16 px-20 rounded flex flex-col items-center justify-center space-y-3">
+          <FaUser size={45} />
+          Funcionários
         </Link>
-        <Link href="/training">
-          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-10 px-10 rounded-lg text-center relative">
-            Treinamento
-            <span className="absolute top-2 left-0 right-0 text-center text-lg font-bold">*ICON*</span>
-          </button>
+        <Link href="/training" className="bg-green-500 hover:bg-green-600 text-white font-bold py-16 px-20 rounded flex flex-col items-center justify-center space-y-3">
+          <FaBook size={45} />
+          Treinamento
         </Link>
-        <Link href="/gerenciaTreinamento">
-          <button className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-10 px-10 rounded-lg text-center relative">
-            Gerenciamento de Treinamentos
-            <span className="absolute top-2 left-0 right-0 text-center text-lg font-bold">*ICON*</span>
-          </button>
+        <Link href="/gerenciaTreinamento" className="bg-green-500 hover:bg-green-600 text-white font-bold py-16 px-20 rounded flex flex-col items-center justify-center space-y-3">
+          <FaChalkboardTeacher size={45} />
+          Gerenciamento de Treinamentos
+        </Link>
+        <Link href="/gerenciaUsuarios" className="bg-green-500 hover:bg-green-600 text-white font-bold py-16 px-20 rounded flex flex-col items-center justify-center space-y-3">
+          <FaUsers size={45} />
+          Gerenciamento de Usuários
         </Link>
       </div>
     </div>
   );
-};
+}

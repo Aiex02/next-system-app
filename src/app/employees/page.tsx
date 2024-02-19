@@ -3,8 +3,12 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
+import { FaEdit, FaTrashAlt, FaEye, FaSearch } from "react-icons/fa";
 import axios from "axios";
+
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface Funcionario {
   id: number;
@@ -19,16 +23,16 @@ export default function Funcionarios() {
     matricula: "",
   });
 
-  const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
   const [modoEdicao, setModoEdicao] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
-  const [allFuncionarios, setAllFuncionarios] = useState<Funcionario[]>([]);
+  const [allEmployees, setAllEmployees] = useState<Funcionario[]>([]);
 
   useEffect(() => {
     const fetchFuncionarios = async () => {
       try {
         const response = await axios.get("http://localhost:3333/funcionarios");
-        setAllFuncionarios(response.data);
+        console.log(response.data)
+        setAllEmployees(response.data);
       } catch (error) {
         console.error("Erro ao buscar treinamentos:", error);
       }
@@ -59,7 +63,7 @@ export default function Funcionarios() {
               nomeCompleto: values.nome,
             });
 
-        setFuncionarios(updatedFuncionarios.data);
+        setAllEmployees([...allEmployees, updatedFuncionarios.data]);
         setModoEdicao(false);
         setFuncionario({
           id: 0,
@@ -67,7 +71,6 @@ export default function Funcionarios() {
           matricula: "",
         });
         resetForm();
-        window.location.reload();
       } catch (error) {
         console.error("Erro ao salvar funcionário:", error);
       }
@@ -84,17 +87,23 @@ export default function Funcionarios() {
   };
 
   const handleEdit = (id: number) => {
-    const funcionarioParaEditar = allFuncionarios.find((f) => f.id === id);
+    const funcionarioParaEditar = allEmployees.find((f) => f.id === id);
     if (funcionarioParaEditar) {
+      console.log(funcionarioParaEditar.nome)
       setFuncionario(funcionarioParaEditar);
       setModoEdicao(true);
+      formik.setValues({
+        nome: funcionarioParaEditar.nome,
+        matricula: funcionarioParaEditar.matricula,
+      });
+      window.scrollTo(0, 0);
     }
   };
 
   return (
     <div className="p-4 mt-14">
       <h1 className="text-center font-bold text-xl">Funcionários</h1>
-      <form onSubmit={formik.handleSubmit} className="mb-4 mx-auto max-w-xl">
+      <form onSubmit={formik.handleSubmit} className="mb-4 mx-auto max-w-xl mt-6">
         <div className="mb-4">
           <label className="block mb-1">Nome:</label>
           <input
@@ -121,47 +130,56 @@ export default function Funcionarios() {
             <div className="text-red-500">{formik.errors.matricula}</div>
           )}
         </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2">
+        <button type="submit" className="bg-green-500 hover:bg-green-600 text-white px-4 py-2">
           {modoEdicao ? "Editar Funcionário" : "Adicionar Funcionário"}
         </button>
       </form>
-
-      <table className=" w-5/6 border-collapse border mx-auto ">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border p-2">Matrícula</th>
-            <th className="border p-2">Nome</th>
-            <th className="border p-2">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {allFuncionarios.map((f) => (
-            <tr key={f.id}>
-              <td className="border p-2 text-center">{f.matricula}</td>
-              <td className="border p-2 text-center">{f.nome}</td>
-              <td className="border p-2 text-center space-x-2">
+      <div className="flex flex-col items-center justify-between mt-20">
+        <form className=" flex gap-2">
+          <Input name="matricula" placeholder="Matricula do Funcionario"/>
+          <Input name="name" placeholder="Nome do Funcionario"/>
+          <Button type="submit" variant="link" className="gap-2">
+            <FaSearch />
+            Filtrar Resultados
+          </Button>
+        </form>
+      </div>
+      <div className="bouder rounded-lg p-2 mt-4">
+        <Table className="w-5/6 mx-auto border-collapse border">
+        <TableHeader>
+          <TableRow>
+            <TableHead className="border p-2 text-center font-bold">Matrícula</TableHead>
+            <TableHead className="border p-2 text-center font-bold">Nome</TableHead>
+            <TableHead className="border p-2 text-center font-bold">Ações</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {allEmployees.map((funcionario) => (
+            <TableRow key={funcionario.id}>
+              <TableCell className="border p-2 text-center">{funcionario.matricula}</TableCell>
+              <TableCell className="border p-2 text-center">{funcionario.nome}</TableCell>
+              <TableCell className="border p-2 text-center space-x-2">
                 <button
-                  onClick={() => handleEdit(f.id)}
+                  onClick={() => handleEdit(funcionario.id)}
                   className="bg-yellow-500 text-white px-2 py-1"
                 >
                   <FaEdit />
                 </button>
-                <button
-                  className="bg-red-500 text-white px-2 py-1"
-                >
+                <button className="bg-red-500 text-white px-2 py-1">
                   <FaTrashAlt />
                 </button>
                 <button
-                  onClick={() => openModal(f)}
+                  onClick={() => openModal(funcionario)}
                   className="bg-green-500 text-white px-2 py-1"
                 >
                   <FaEye />
                 </button>
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+            </Table>
+      </div>
 
       <Modal
         isOpen={modalAberto}

@@ -3,7 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaSearch, FaTrashAlt } from "react-icons/fa";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface Treinamento {
   id: string;
@@ -20,7 +23,6 @@ export default function Treinamentos() {
     validade: 0,
   });
 
-  const [treinamentos, setTreinamentos] = useState<Treinamento[]>([]);
   const [modoEdicao, setModoEdicao] = useState(false);
   const [allTreinamentos, setAllTreinamentos] = useState<Treinamento[]>([]);
 
@@ -52,15 +54,15 @@ export default function Treinamentos() {
       try {
         const updatedTreinamentos = modoEdicao
           ? await axios.put(
-              `http://localhost:3333/treinamentos/${treinamento.id}`,
-              { ...values, validade: Number(values.validade) }
-            )
+            `http://localhost:3333/treinamentos/${treinamento.id}`,
+            { ...values, validade: Number(values.validade) }
+          )
           : await axios.post("http://localhost:3333/treinamentos", {
-              ...values,
-              validade: Number(values.validade),
-            });
+            ...values,
+            validade: Number(values.validade),
+          });
 
-        setTreinamentos(updatedTreinamentos.data);
+        setAllTreinamentos([...allTreinamentos, updatedTreinamentos.data]);
         setModoEdicao(false);
         setTreinamento({
           id: "",
@@ -69,8 +71,6 @@ export default function Treinamentos() {
           validade: 0,
         });
         resetForm();
-
-        window.location.reload();
       } catch (error) {
         console.error("Erro ao salvar treinamento:", error);
       }
@@ -82,8 +82,17 @@ export default function Treinamentos() {
     if (treinamentoParaEditar) {
       setTreinamento(treinamentoParaEditar);
       setModoEdicao(true);
+      formik.setValues({
+        nome: treinamentoParaEditar.nome,
+        nr: treinamentoParaEditar.nr,
+        validade: String(treinamentoParaEditar.validade)
+      });
+      window.scrollTo(0, 0);
     }
   };
+
+
+
 
   return (
     <div className="p-4 mt-14">
@@ -128,27 +137,37 @@ export default function Treinamentos() {
             <div className="text-red-500">{formik.errors.validade}</div>
           )}
         </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2">
+        <button type="submit" className="bg-green-500 hover:bg-green-600 text-white px-4 py-2">
           {modoEdicao ? "Editar Treinamento" : "Adicionar Treinamento"}
         </button>
       </form>
-      <table className="w-5/6 border-collapse border mx-auto">
-        <thead>
-          <tr>
-            <th className="border px-4 py-2">Nome</th>
-            <th className="border px-4 py-2">NR</th>
-            <th className="border px-4 py-2">Validade</th>
-            <th className="border px-4 py-2">Ações</th>
-          </tr>
-        </thead>
+      <div className="flex flex-col items-center justify-between mt-20">
+        <form className=" flex gap-2">
+          <Input name="matricula" placeholder="Matricula do Funcionario" />
+          <Input name="name" placeholder="Nome do Funcionario" />
+          <Button type="submit" variant="link" className="gap-2">
+            <FaSearch />
+            Filtrar Resultados
+          </Button>
+        </form>
+      </div>
+      <Table className="w-5/6 border-collapse border mt-4 mx-auto">
+        <TableHeader>
+          <TableRow>
+            <TableHead className="border px-4 py-2">Nome</TableHead>
+            <TableHead className="border px-4 py-2">NR</TableHead>
+            <TableHead className="border px-4 py-2">Validade</TableHead>
+            <TableHead className="border px-4 py-2">Ações</TableHead>
+          </TableRow>
+        </TableHeader>
 
-        <tbody>
+        <TableBody>
           {allTreinamentos.map((treinamento) => (
-            <tr key={treinamento.id}>
-              <td className="border px-4 py-2">{treinamento.nome}</td>
-              <td className="border px-4 py-2">{treinamento.nr}</td>
-              <td className="border px-4 py-2">{`${treinamento.validade} meses`}</td>
-              <td className="border p-2 text-center space-x-1">
+            <TableRow key={treinamento.id}>
+              <TableCell className="border px-4 py-2">{treinamento.nome}</TableCell>
+              <TableCell className="border px-4 py-2">{treinamento.nr}</TableCell>
+              <TableCell className="border px-4 py-2">{`${treinamento.validade} meses`}</TableCell>
+              <TableCell className="border p-2 text-center space-x-1">
                 <button
                   className="bg-yellow-500 text-white px-2 py-1 mr-2"
                   onClick={() => handleEdit(treinamento.id)}
@@ -156,13 +175,13 @@ export default function Treinamentos() {
                   <FaEdit />
                 </button>
                 <button className="bg-red-500 text-white px-2 py-1">
-                <FaTrashAlt />
+                  <FaTrashAlt />
                 </button>
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 }
