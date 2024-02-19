@@ -9,33 +9,33 @@ export default function Dropdown() {
         <ul className="space-y-2">
         <li>
             <Link href="/">
-              <button className="block w-full text-left text-black bg-transparent hover:bg-orange-600 py-2 px-4 rounded-md focus:outline-none">
+              <button className="block w-full text-left text-black bg-transparent hover:bg-green-500 hover:text-white py-2 px-4 rounded-md focus:outline-none">
                 Home
               </button>
             </Link>
           </li>
           <li>
             <Link href="/employees">
-              <button className="block w-full text-left text-black bg-transparent hover:bg-orange-600 py-2 px-4 rounded-md focus:outline-none">
+              <button className="block w-full text-left text-black bg-transparent hover:bg-green-500 hover:text-white py-2 px-4 rounded-md focus:outline-none">
                 Funcionários
               </button>
             </Link>
           </li>
           <li>
             <Link href="/training">
-              <button className="block w-full text-left text-black bg-transparent hover:bg-orange-600 py-2 px-4 rounded-md focus:outline-none">
+              <button className="block w-full text-left text-black bg-transparent hover:bg-green-500 hover:text-white py-2 px-4 rounded-md focus:outline-none">
                 Treinamentos
               </button>
             </Link>
           </li>
           <li>
             <Link href="/gerenciaTreinamento">
-              <button className="block w-full text-left text-black bg-transparent hover:bg-orange-600 py-2 px-4 rounded-md focus:outline-none">
+              <button className="block w-full text-left text-black bg-transparent hover:bg-green-500 hover:text-white py-2 px-4 rounded-md focus:outline-none">
                 Gerenciamento de Treinamentos
               </button>
             </Link>
             <Link href="/gerenciaUsuarios">
-              <button className="block w-full text-left text-black bg-transparent hover:bg-orange-600 py-2 px-4 rounded-md focus:outline-none">
+              <button className="block w-full text-left text-black bg-transparent hover:bg-green-500 hover:text-white py-2 px-4 rounded-md focus:outline-none">
                 Gerenciamento de Usuários
               </button>
             </Link>

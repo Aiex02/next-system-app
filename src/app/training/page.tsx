@@ -137,7 +137,7 @@ export default function Treinamentos() {
             <div className="text-red-500">{formik.errors.validade}</div>
           )}
         </div>
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2">
+        <button type="submit" className="bg-green-500 hover:bg-green-600 text-white px-4 py-2">
           {modoEdicao ? "Editar Treinamento" : "Adicionar Treinamento"}
         </button>
       </form>

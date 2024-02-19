@@ -77,7 +77,7 @@ export default function TreinaFunc() {
     fetchData();
   }, []);
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-gray-100 rounded shadow">
+    <div className="max-w-5xl mx-auto p-6 bg-gray-100 rounded shadow">
       <h2 className="text-2xl font-bold mb-4">Associações de Funcionários e Treinamentos</h2>
       <form onSubmit={formik.handleSubmit}>
         <div className="grid grid-cols-2 gap-4 mb-4">
@@ -138,12 +138,12 @@ export default function TreinaFunc() {
         </div>
         <button
           type="submit"
-          className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300 active:bg-blue-800"
+          className="inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring focus:border-blue-300 active:bg-blue-800"
         >
           Enviar
         </button>
       </form>
-      <Table className="min-w-full border rounded overflow-hidden mt-4">
+      <Table className="min-w-full border rounded overflow-hidden mt-8">
         <TableHeader className="bg-gray-200">
           <TableRow>
             <TableHead className="border px-4 py-2">Matrícula</TableHead>

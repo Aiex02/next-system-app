@@ -107,12 +107,12 @@ export default function UserManagement() {
                     {formik.errors.password && <div className="text-red-500">{formik.errors.password}</div>}
                 </div>
 
-                <button type="submit" className="bg-blue-500 text-white px-4 py-2">
+                <button type="submit" className="bg-green-500 hover:bg-green-600 text-white px-4 py-2">
                     {editingUser ? 'Editar Usuário' : 'Adicionar Usuário'}
                 </button>
             </form>
 
-            <Table className="w-5/6 mx-auto border-collapse border">
+            <Table className="w-5/6 mx-auto border-collapse border mt-10">
                 <TableHeader>
                     <TableRow>
                         <TableHead className="border p-2 text-center font-bold">Nome</TableHead>
