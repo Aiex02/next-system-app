@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import { Funcionario } from "@/types/types";
 import { FaEdit, FaTrashAlt, FaEye } from "react-icons/fa";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "../ui/table";
 
 interface FuncionariosTableProps {
   funcionarios: Funcionario[];
@@ -23,44 +31,55 @@ const FuncionariosTable: React.FC<FuncionariosTableProps> = ({
   };
 
   return (
-    <div className="bouder rounded-lg p-2 mt-4">
-      <table className="w-5/6 mx-auto border-collapse border">
-        <thead>
-          <tr>
-            <th className="border p-2 text-center font-bold">Matrícula</th>
-            <th className="border p-2 text-center font-bold">Nome</th>
-            <th className="border p-2 text-center font-bold">Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          {funcionarios.map((funcionario) => (
-            <tr key={funcionario.id}>
-              <td className="border p-2 text-center">
-                {funcionario.matricula}
-              </td>
-              <td className="border p-2 text-center">{funcionario.nome}</td>
-              <td className="border p-2 text-center space-x-2">
-                <button
-                  onClick={() => onEdit(funcionario.id)}
-                  className="bg-yellow-500 text-white px-2 py-1"
-                >
-                  <FaEdit />
-                </button>
-                <button className="bg-red-500 text-white px-2 py-1">
-                  <FaTrashAlt />
-                </button>
-                <button
-                  onClick={() => handleView(funcionario)}
-                  className="bg-green-500 text-white px-2 py-1"
-                >
-                  <FaEye />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
+    <div className="p-2 mt-4 overflow-x-auto">
+      <div className="max-w-4xl mx-auto">
+        <Table className="border-collapse border rounded mt-8 w-full">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="border p-2 text-center font-bold">
+                Matrícula
+              </TableHead>
+              <TableHead className="border p-2 text-center font-bold">
+                Nome
+              </TableHead>
+              <TableHead className="border p-2 text-center font-bold">
+                Ações
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {funcionarios.map((funcionario) => (
+              <TableRow key={funcionario.id}>
+                <TableCell className="border px-4 py-2 text-center">
+                  {funcionario.matricula}
+                </TableCell>
+                <TableCell className="border px-4 py-2 text-center">
+                  {funcionario.nome}
+                </TableCell>
+                <TableCell className="border px-4 py-2 text-center">
+                  <div className="flex justify-center items-center space-x-1 md:space-x-2">
+                    <button
+                      onClick={() => onEdit(funcionario.id)}
+                      className="bg-yellow-500 text-white px-2 py-1 md:px-3 md:py-2"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button className="bg-red-500 text-white px-2 py-1 md:px-3 md:py-2">
+                      <FaTrashAlt />
+                    </button>
+                    <button
+                      onClick={() => handleView(funcionario)}
+                      className="bg-green-500 text-white px-2 py-1 md:px-3 md:py-2"
+                    >
+                      <FaEye />
+                    </button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
       {funcionarioSelecionado && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg max-w-md mx-auto">
