@@ -64,14 +64,18 @@ const Treinamentos = () => {
   };
 
   return (
-    <div className="p-4 mt-14">
-      <h1 className="text-center font-bold text-xl">Treinamentos: </h1>
-      <TreinamentoForm
-        initialData={treinamentoEditavel}
-        onSubmit={handleFormSubmit}
-        modoEdicao={modoEdicao}
-      />
-      <TreinamentosTable treinamentos={treinamentos} onEdit={handleEdit} />
+    <div className="px-4 py-2 mt-14  mx-auto">
+      <h1 className="text-center font-bold text-xl mb-6">Treinamentos:</h1>
+      <div className="mb-8">
+        <TreinamentoForm
+          initialData={treinamentoEditavel}
+          onSubmit={handleFormSubmit}
+          modoEdicao={modoEdicao}
+        />
+      </div>
+      <div>
+        <TreinamentosTable treinamentos={treinamentos} onEdit={handleEdit} />
+      </div>
     </div>
   );
 };

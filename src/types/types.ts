@@ -11,4 +11,8 @@ export interface Funcionario {
   matricula: string;
 }
 
-  
+export interface GerenciaTreinamento {
+  funcionarioId: string;
+  treinamentoId: string;
+  dataTreinamento: Date;
+}

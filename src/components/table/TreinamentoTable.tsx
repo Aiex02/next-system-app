@@ -20,38 +20,48 @@ const TreinamentosTable: React.FC<TreinamentosTableProps> = ({
   onEdit,
 }) => {
   return (
-    <Table className="w-5/6 border-collapse border mt-4 mx-auto">
-      <TableHeader>
-        <TableRow>
-          <TableHead className="border px-4 py-2">Nome</TableHead>
-          <TableHead className="border px-4 py-2">NR</TableHead>
-          <TableHead className="border px-4 py-2">Validade</TableHead>
-          <TableHead className="border px-4 py-2">Ações</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {treinamentos.map((treinamento) => (
-          <TableRow key={treinamento.id}>
-            <TableCell className="border px-4 py-2">
-              {treinamento.nome}
-            </TableCell>
-            <TableCell className="border px-4 py-2">{treinamento.nr}</TableCell>
-            <TableCell className="border px-4 py-2">{`${treinamento.validade} meses`}</TableCell>
-            <TableCell className="border p-2 text-center space-x-1">
-              <button
-                className="bg-yellow-500 text-white px-2 py-1 mr-2"
-                onClick={() => onEdit(treinamento.id)}
-              >
-                <FaEdit />
-              </button>
-              <button className="bg-red-500 text-white px-2 py-1">
-                <FaTrashAlt />
-              </button>
-            </TableCell>
+    <div className="max-w-4xl mx-auto">
+      <Table className="border-collapse border rounded mt-8 w-full">
+        <TableHeader>
+          <TableRow>
+            <TableHead className="border p-2 text-center font-bold">Nome</TableHead>
+            <TableHead className="border p-2 text-center font-bold">NR</TableHead>
+            <TableHead className="border p-2 text-center font-bold">
+              Validade
+            </TableHead>
+            <TableHead className="border p-2 text-center font-bold">Ações</TableHead>
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+        <TableBody>
+          {treinamentos.map((treinamento) => (
+            <TableRow key={treinamento.id}>
+              <TableCell className="border px-4 py-2 text-center">
+                {treinamento.nome}
+              </TableCell>
+              <TableCell className="border px-4 py-2 text-center">
+                {treinamento.nr}
+              </TableCell>
+              <TableCell className="border px-4 py-2 text-center">
+                {`${treinamento.validade} meses`}
+              </TableCell>
+              <TableCell className="border px-4 py-2 text-center">
+                <div className="flex justify-center items-center space-x-1 md:space-x-2">
+                  <button
+                    onClick={() => onEdit(treinamento.id)}
+                    className="bg-yellow-500 text-white px-2 py-1 md:px-3 md:py-2"
+                  >
+                    <FaEdit />
+                  </button>
+                  <button className="bg-red-500 text-white px-2 py-1 md:px-3 md:py-2">
+                    <FaTrashAlt />
+                  </button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
   );
 };
 

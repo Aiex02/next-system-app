@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google"
 import "../styles/globals.css";
-import Dropdown from "../components/dropdown";
-import Navbar from "../components/navbar";
-import { cn } from "@/lib/utils";
+import NextAuthSessionProvider from "@/providers/sessionProvider";
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -21,17 +19,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(
-          "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-        )}>
-        <div className="flex h-full">
-          <Dropdown />
-          <div className="flex flex-col w-full">
-            <Navbar />
-            <div>{children}</div>
-          </div>
-        </div>
+      <body>
+        <NextAuthSessionProvider>{children}</NextAuthSessionProvider>
       </body>
     </html>
   );

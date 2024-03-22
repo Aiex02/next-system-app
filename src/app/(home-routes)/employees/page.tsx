@@ -60,14 +60,19 @@ const Funcionarios = () => {
 
   return (
     <div className="p-4 mt-14">
-      <h1 className="text-center font-bold text-xl">Funcionarios: </h1>
+    <h1 className="text-center font-bold text-xl mb-4">Funcionários:</h1>
+    <div>
       <FuncionarioForm
         initialData={funcionarioEditavel}
         onSubmit={handleFormSubmit}
         modoEdicao={modoEdicao}
       />
+    </div>
+    <div className="mt-8 ">
       <FuncionariosTable funcionarios={funcionarios} onEdit={handleEdit} />
     </div>
+  </div>
+  
   );
 };
 
